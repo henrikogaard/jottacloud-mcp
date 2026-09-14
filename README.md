@@ -1,6 +1,6 @@
 # jottacloud-mcp
 
-**v0.1.0** — first public release.
+**v0.1.0** — `@henrikogard/jottacloud-mcp` on npm.
 
 Stdio [MCP](https://modelcontextprotocol.io) server so **Cursor**, **Grok Bot**, **Claude**, and **Codex** can read (and optionally write) [Jottacloud](https://www.jottacloud.com) files.
 
@@ -124,7 +124,7 @@ Desktop Cursor: `~/.cursor/mcp.json` (or project `.cursor/mcp.json`):
   "mcpServers": {
     "jottacloud": {
       "command": "npx",
-      "args": ["-y", "jottacloud-mcp"],
+      "args": ["-y", "@henrikogard/jottacloud-mcp"],
       "env": {
         "JOTTACLOUD_LOGIN_TOKEN": "paste-from-web-secure",
         "JOTTACLOUD_ROOTS": "/Archive",
@@ -135,7 +135,7 @@ Desktop Cursor: `~/.cursor/mcp.json` (or project `.cursor/mcp.json`):
 }
 ```
 
-Until the package is on npm, point `command` at `node` and `args` at this repo’s `dist/index.js`. After `--login` you can omit `JOTTACLOUD_LOGIN_TOKEN`.
+After `--login` you can omit `JOTTACLOUD_LOGIN_TOKEN`.
 
 **Cursor Cloud Agents** do not read `~/.cursor/mcp.json`. Add the server in the MCP dropdown at [cursor.com/agents](https://cursor.com/agents).
 
@@ -143,7 +143,7 @@ Until the package is on npm, point `command` at `node` and `args` at this repo�
 
 Grok Bot cannot use your laptop’s `mcp.json`. Ask the bot in chat (say **custom server**):
 
-> Add a custom MCP server called jottacloud that runs: npx -y jottacloud-mcp
+> Add a custom MCP server called jottacloud that runs: npx -y @henrikogard/jottacloud-mcp
 > Set env JOTTACLOUD_LOGIN_TOKEN to my personal login token, JOTTACLOUD_READ_ONLY=1, and JOTTACLOUD_ROOTS=/Archive.
 
 Until publish, use a built path the bot can run, or `npx` from npm once published. Put the token on the **server env**, not in later chat.
@@ -167,7 +167,7 @@ Codex (`~/.codex/config.toml`):
 ```toml
 [mcp_servers.jottacloud]
 command = "npx"
-args = ["-y", "jottacloud-mcp"]
+args = ["-y", "@henrikogard/jottacloud-mcp"]
 
 [mcp_servers.jottacloud.env]
 JOTTACLOUD_LOGIN_TOKEN = "paste-from-web-secure"

@@ -73,7 +73,7 @@ Do **not** accept tokens as tool arguments. Do **not** log tokens or Authorizati
 | Transport | **stdio only** |
 | HTTP client | `fetch` or undici; XML parse with a small dependency (e.g. `fast-xml-parser`) |
 | Auth reference | Mirror rclone / mifi/jotta personal-token exchange; keep Jotta client in a thin internal module |
-| Package | npm package with `bin` entry, e.g. `@jottacloud/mcp` or `jottacloud-mcp` → `node dist/index.js` |
+| Package | npm package with `bin` entry: `@henrikogard/jottacloud-mcp` → `node dist/index.js` |
 | Install | `npx -y <package>` for hosts; optional Docker later |
 | Tests | Unit tests for path sandbox + XML/JSON mapping; integration tests against live API behind a flag |
 
@@ -90,7 +90,7 @@ Full per-client locations, remote variants, and approval notes: **[research/03-c
   "mcpServers": {
     "jottacloud": {
       "command": "npx",
-      "args": ["-y", "jottacloud-mcp"],
+      "args": ["-y", "@henrikogard/jottacloud-mcp"],
       "env": {
         "JOTTACLOUD_LOGIN_TOKEN": "your-personal-login-token",
         "JOTTACLOUD_ROOTS": "/Archive",
