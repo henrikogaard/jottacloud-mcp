@@ -1,0 +1,50 @@
+{
+  "name": "jottacloud-mcp",
+  "version": "0.1.0",
+  "description": "Stdio MCP server for Jottacloud files (Cursor, Grok Bot, Claude, Codex)",
+  "author": "Henrik Øgård",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/henrikogaard/jottacloud-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/henrikogaard/jottacloud-mcp/issues"
+  },
+  "homepage": "https://github.com/henrikogaard/jottacloud-mcp#readme",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "bin": {
+    "jottacloud-mcp": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts",
+    "test": "tsx --test test/**/*.test.ts",
+    "typecheck": "tsc --noEmit",
+    "inspect": "npx @modelcontextprotocol/inspector node dist/index.js"
+  },
+  "keywords": [
+    "mcp",
+    "jottacloud",
+    "model-context-protocol"
+  ],
+  "dependencies": {
+    "@modelcontextprotocol/server": "^2.0.0",
+    "fast-xml-parser": "^5.2.5",
+    "zod": "^4.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  }
+}
