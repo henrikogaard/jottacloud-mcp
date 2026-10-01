@@ -1,7 +1,7 @@
 {
   "name": "@henrikogard/jottacloud-mcp",
   "version": "0.1.0",
-  "description": "Stdio MCP server for Jottacloud files (Cursor, Grok Bot, Claude, Codex)",
+  "description": "Jottacloud MCP server with a read-only file browser for ChatGPT, Claude and Codex",
   "author": "Henrik Øgård",
   "license": "MIT",
   "publishConfig": {
@@ -17,7 +17,7 @@
   "homepage": "https://github.com/henrikogaard/jottacloud-mcp#readme",
   "type": "module",
   "engines": {
-    "node": ">=20"
+    "node": ">=20.19"
   },
   "bin": {
     "jottacloud-mcp": "dist/index.js"
@@ -25,16 +25,22 @@
   "files": [
     "dist",
     "LICENSE",
-    "README.md"
+    "README.md",
+    "ui/index.html"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "npm run build:ui && tsc && node scripts/build-plugins.mjs",
     "start": "node dist/index.js",
     "dev": "tsx src/index.ts",
     "test": "tsx --test test/**/*.test.ts",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && tsc -p web/tsconfig.json",
     "inspect": "npx @modelcontextprotocol/inspector node dist/index.js",
-    "prepublishOnly": "npm run typecheck && npm test && npm run build"
+    "prepublishOnly": "npm run typecheck && npm run build && npm test",
+    "build:ui": "vite build web --config web/vite.config.ts",
+    "dev:ui": "vite --config web/vite.config.ts --host 127.0.0.1 web",
+    "start:http": "node dist/http.js",
+    "dev:http": "tsx src/http.ts",
+    "test:ui": "playwright test"
   },
   "keywords": [
     "mcp",
@@ -42,13 +48,26 @@
     "model-context-protocol"
   ],
   "dependencies": {
+    "@modelcontextprotocol/ext-apps": "^2.0.3",
+    "@modelcontextprotocol/sdk": "^1.31.0",
     "@modelcontextprotocol/server": "^2.0.0",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.7.0",
     "fast-xml-parser": "^5.2.5",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
     "zod": "^4.2.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "@types/express": "^5.0.6",
     "@types/node": "^24.3.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "esbuild": "^0.28.2",
     "tsx": "^4.20.5",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "vite": "^7.3.6",
+    "vite-plugin-singlefile": "^2.3.3"
   }
 }

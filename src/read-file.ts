@@ -17,7 +17,7 @@ export function looksText(mime: string | undefined, bytes: Buffer): boolean {
   const sample = bytes.subarray(0, 1024);
   if (sample.includes(0)) return false;
   try {
-    sample.toString("utf8");
+    new TextDecoder("utf-8", { fatal: true }).decode(sample, { stream: bytes.length > sample.length });
     return true;
   } catch {
     return false;
@@ -25,7 +25,7 @@ export function looksText(mime: string | undefined, bytes: Buffer): boolean {
 }
 
 export async function readFilePayload(
-  client: JottaClient,
+  client: Pick<JottaClient, "getNode" | "readBytes" | "extraRootsFor">,
   config: AppConfig,
   path: string,
   opts: { max_bytes?: number; head?: number; tail?: number } = {},
@@ -43,7 +43,7 @@ export async function readFilePayload(
     range = { start, end: size - 1 };
   } else if (opts.head) {
     range = { start: 0, end: Math.min(opts.head, cap) - 1 };
-  } else if (size > cap) {
+  } else {
     range = { start: 0, end: cap - 1 };
   }
   const { bytes, mime } = await client.readBytes(path, range, extra);

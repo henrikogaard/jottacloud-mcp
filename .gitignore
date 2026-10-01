@@ -4,4 +4,11 @@ dist/
 .env
 .env.*
 tokens.json
+*.oauth.json
+*.oauth.json.*.tmp
 .DS_Store
+
+/ui/
+/artifacts/
+/playwright-report/
+/test-results/

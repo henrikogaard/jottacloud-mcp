@@ -9,6 +9,7 @@ import { askLoginToken, envLoginHint } from "./login.js";
 import { PathError, TRASH_ROOT } from "./jotta/paths.js";
 import type { JottaClient } from "./jotta/client.js";
 import type { JfsEntry } from "./jotta/xml.js";
+import { registerBrowser } from "./browser-tools.js";
 import { readFilePayload } from "./read-file.js";
 
 const openWorld = { openWorldHint: true } as const;
@@ -529,5 +530,6 @@ export function createJottaMcpServer(client: JottaClient, config: AppConfig): Mc
   });
   registerTools(server, client, config);
   registerResources(server, client, config);
+  registerBrowser(server, client, config);
   return server;
 }

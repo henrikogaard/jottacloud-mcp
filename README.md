@@ -4,7 +4,7 @@
 
 Stdio [MCP](https://modelcontextprotocol.io) server so **Cursor**, **Grok Bot**, **Claude**, and **Codex** can read (and optionally write) [Jottacloud](https://www.jottacloud.com) files.
 
-It is a local process: Cursor/Claude/Codex spawn it on your machine; Grok Bot runs the same `npx` command on its cloud VM. There is **no public HTTP endpoint**.
+It is a local process: Cursor/Claude/Codex spawn it on your machine; Grok Bot runs the same `npx` command on its cloud VM. The default transport remains stdio. An optional **private, read-only HTTP service** and MCP Apps file browser are available from this source checkout; see [the ChatGPT integration guide](docs/chatgpt-integration.md). No service has been deployed by this change.
 
 Jottacloud has no third-party OAuth app. Login is the same **personal login token** as `jotta-cli` / rclone.
 
@@ -100,7 +100,7 @@ npm install
 npm run build
 ```
 
-Node 20+.
+Node 20.19+ (Node 22 recommended).
 
 1. Create a personal login token at [https://www.jottacloud.com/web/secure](https://www.jottacloud.com/web/secure).
 2. Either leave it in `JOTTACLOUD_LOGIN_TOKEN` for the first MCP start, call the `login` tool, or exchange it once:
@@ -216,13 +216,24 @@ Write (if `JOTTACLOUD_READ_ONLY=0`):
 
 Paths look like `/Archive/docs/note.md`.
 
+## File browser and plugin packages
+
+The same repo contains the server, React MCP App and shared `find-and-read` skill. `npm run build` generates a single-file UI plus standalone local plugin folders under `artifacts/plugins/claude` and `artifacts/plugins/openai`. The folders include a bundled Node server, the UI and skills; no npm install or unpublished package version is needed inside the installed plugin.
+
+The browser lists configured roots, paginates folders, searches file names, previews bounded text and small PNG/JPEG/GIF/WebP images, and lets the user explicitly add a selected file to conversation context. PDF/Office text extraction, uploads, edits, composer mentions and multi-user hosting are not included. A preview alone does not add the file bytes to model context. Existing tools-only stdio use remains available.
+
+See [ChatGPT setup and verification boundaries](docs/chatgpt-integration.md) for private OAuth, deployment prerequisites and local plugin testing.
+
 ## Development
 
 ```bash
-npm test
 npm run typecheck
 npm run build
+npm test
+npm run test:ui
 ```
+
+The UI tests use a synthetic MCP Apps host (`web/qa.html`) that is not included in the production bundle. The HTTP test exercises OAuth and MCP over localhost with synthetic files and never uses real account credentials.
 
 Live Jottacloud tests stay off unless you opt in (needs a real token / store; skipped in CI):
 
