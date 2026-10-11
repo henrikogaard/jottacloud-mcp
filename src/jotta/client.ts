@@ -171,7 +171,12 @@ export class JottaClient {
     }
     const res = await this.jfsResponse("GET", `${mapping.jfsRelative}?mode=bin`, { headers });
     const mime = res.headers.get("content-type") ?? undefined;
-    const bytes = Buffer.from(await res.arrayBuffer());
+    if (range && range.start > 0 && res.status === 200) {
+      await res.body?.cancel();
+      throw new JottaError("Server ignored the byte range; narrow the read to the file head.");
+    }
+    const cap = range ? Math.min(range.end - range.start + 1, this.config.limits.readMaxBytes) : this.config.limits.readMaxBytes;
+    const bytes = await readBoundedResponse(res, cap, false);
     return { bytes, mime };
   }
 
@@ -324,7 +329,7 @@ export class JottaClient {
 
   private async jfs(method: string, relative: string): Promise<string> {
     const res = await this.jfsResponse(method, relative);
-    return await res.text();
+    return (await readBoundedResponse(res, this.config.limits.searchListstreamMaxBytes, true)).toString("utf8");
   }
 
   private async jfsResponse(
@@ -396,10 +401,39 @@ async function postToken(url: string, body: URLSearchParams): Promise<StoredToke
 async function fetchWithRetry(url: string, init: RequestInit, attempts = 4): Promise<Response> {
   let last: Response | undefined;
   for (let i = 0; i < attempts; i++) {
-    last = await fetch(url, init);
+    last = await fetch(url, { ...init, signal: init.signal ?? AbortSignal.timeout(30_000) });
     if (last.status !== 429 && last.status < 500) return last;
     const delay = Math.min(2000, 50 * 2 ** i);
     await new Promise((r) => setTimeout(r, delay));
   }
   return last!;
+}
+
+/** Enforce caps while reading, including servers that ignore HTTP Range. */
+export async function readBoundedResponse(
+  response: Response,
+  cap: number,
+  rejectOverflow: boolean,
+): Promise<Buffer> {
+  if (!response.body) return Buffer.alloc(0);
+  const reader = response.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let total = 0;
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      if (value.length > cap - total && rejectOverflow) {
+        throw new Error("Response exceeds the configured byte limit.");
+      }
+      const chunk = value.subarray(0, cap - total);
+      chunks.push(chunk);
+      total += chunk.length;
+      if (total === cap && !rejectOverflow) break;
+    }
+  } finally {
+    await reader.cancel().catch(() => undefined);
+    reader.releaseLock();
+  }
+  return Buffer.concat(chunks, total);
 }
