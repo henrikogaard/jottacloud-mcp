@@ -1,6 +1,6 @@
 {
   "name": "@henrikogard/jottacloud-mcp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Jottacloud MCP server with a read-only file browser for ChatGPT, Claude and Codex",
   "author": "Henrik Øgård",
   "license": "MIT",
