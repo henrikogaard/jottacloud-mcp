@@ -181,6 +181,7 @@ JOTTACLOUD_READ_ONLY = "1"
 | --- | --- |
 | `JOTTACLOUD_LOGIN_TOKEN` | One-shot personal login token (bootstrap) |
 | `JOTTACLOUD_TOKEN_STORE` | Override token file path |
+| `HTTPS_PROXY` | Send every request through this proxy (for hosts that confine the server to one) |
 | `JOTTACLOUD_ROOTS` | Allowed path prefixes (default `/Archive`) |
 | `JOTTACLOUD_READ_ONLY` | `1` (default) omits write tools; `0` enables them |
 | `JOTTACLOUD_DEVICE` / `JOTTACLOUD_MOUNT` | Defaults `Jotta` / `Archive` |

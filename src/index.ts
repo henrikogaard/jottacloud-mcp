@@ -3,12 +3,14 @@ import { serveStdio } from "@modelcontextprotocol/server/stdio";
 import { loadConfig } from "./config.js";
 import { createJottaMcpServer } from "./create-server.js";
 import { JottaClient } from "./jotta/client.js";
+import { useProxyFromEnvironment } from "./proxy.js";
 
 function log(...args: unknown[]): void {
   console.error(...args);
 }
 
 async function main(): Promise<void> {
+  useProxyFromEnvironment();
   const argv = process.argv.slice(2);
   const config = loadConfig();
   const client = new JottaClient(config);
